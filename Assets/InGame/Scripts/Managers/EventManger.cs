@@ -5,6 +5,20 @@ using UnityEngine;
 
 namespace Ty.ProjectSubak.Game
 {
+    #region Enum
+    public enum EventType
+    {
+        InitGame,
+        StartGame,
+        OpenSetting,
+        CloseSetting,
+        EndGame,
+        RestartGame,
+        ToLobby,
+        ShutDown
+    }
+    #endregion
+
     public class EventManager : MonoBehaviour
     {
         #region StaticField
@@ -20,14 +34,14 @@ namespace Ty.ProjectSubak.Game
         }
         #endregion
 
-        #region PrivateField
-        private List<IObserver> obs;
+        #region SerializeField
+        [SerializeField] private List<ObserverBehaviour> obs;
         #endregion
 
         #region PublicMethod
-        public void CallEvent(GameState nextGameSate)
+        public void CallEvent(EventType eventType)
         {
-            foreach (IObserver observer in obs) observer.OnEvent(nextGameSate);
+            //foreach (IObserver observer in obs) observer.OnEvent(eventType);
         }
         #endregion
 

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Ty.ProjectSubak.Game
 {
-    public interface IObserver 
+    public abstract class ObserverBehaviour : MonoBehaviour
     {
-        public void OnEvent(GameState nextGameState);
+        public abstract void OnEvent(EventType eventType);
     }
 }

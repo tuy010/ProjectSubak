@@ -4,21 +4,21 @@ using UnityEngine;
 
 namespace Ty.ProjectSubak.Game
 {
-    #region Enum
-    public enum GameState
-    {
-        Idle,
-        Init,
-        GamePlay,
-        Setting,
-        GameEnd,
-        ToLobby,
-        ShutDown
-    }
-    #endregion
-
     public class GameManager : MonoBehaviour
     {
+        #region Enum
+        public enum GameState
+        {
+            Idle,
+            Init,
+            GamePlay,
+            Setting,
+            GameEnd,
+            ToLobby,
+            ShutDown
+        }
+        #endregion
+
         #region StaticField
         static private GameManager instance;
         static public GameManager Instance
@@ -48,16 +48,16 @@ namespace Ty.ProjectSubak.Game
         {
             if (nowState == nextState) return;
 
-            bool isUpdated = true;
             if (nowState == GameState.Idle)
             {
                 switch (nextState)
                 {
                     case GameState.Init:
+                        nowState = nextState;
                         InitGame();
                         break;
                     default:
-                        isUpdated = false;
+                        nextState = nowState;
                         break;
                 }
             }
@@ -66,10 +66,11 @@ namespace Ty.ProjectSubak.Game
                 switch (nextState)
                 {
                     case GameState.GamePlay:
+                        nowState = nextState;
                         StarGame();
                         break;
                     default:
-                        isUpdated = false;
+                        nextState = nowState;
                         break;
                 }
             }
@@ -78,13 +79,15 @@ namespace Ty.ProjectSubak.Game
                 switch (nextState)
                 {
                     case GameState.Setting:
+                        nowState = nextState;
                         OpenSetting();
                         break;
                     case GameState.GameEnd:
+                        nowState = nextState;
                         EndGame();
                         break;
                     default:
-                        isUpdated = false;
+                        nextState = nowState;
                         break;
                 }
             }
@@ -93,16 +96,19 @@ namespace Ty.ProjectSubak.Game
                 switch (nextState)
                 {
                     case GameState.GamePlay:
+                        nowState = nextState;
                         CloseSetting();
                         break;
                     case GameState.ToLobby:
+                        nowState = nextState;
                         ToLobby();
                         break;
                     case GameState.ShutDown:
+                        nowState = nextState;
                         ShutDown();
                         break;
                     default:
-                        isUpdated = false;
+                        nextState = nowState;
                         break;
                 }
             }
@@ -111,30 +117,31 @@ namespace Ty.ProjectSubak.Game
                 switch (nextState)
                 {
                     case GameState.Idle:
+                        nowState = nextState;
                         RestartGame();
                         break;
                     case GameState.ToLobby:
+                        nowState = nextState;
                         ToLobby();
                         break;
                     case GameState.ShutDown:
+                        nowState = nextState;
                         ShutDown();
                         break;
                     default:
-                        isUpdated = false;
+                        nextState = nowState;
                         break;
                 }
             }
             else if (nowState == GameState.ToLobby)
             {
-                isUpdated = false;
+                
             }
             else if (nowState == GameState.ShutDown)
             {
-                isUpdated = false;
+                
             }
 
-            if (isUpdated) nowState = nextState;
-            else nextState = nowState;
 
             return;
         }
@@ -143,27 +150,27 @@ namespace Ty.ProjectSubak.Game
         #region PrivateMethods
         private void InitGame()
         {
-
+            EventManager.Instance.CallEvent(EventType.InitGame);
         }
         private void StarGame()
         {
-
+            EventManager.Instance.CallEvent(EventType.StartGame);
         }
         private void OpenSetting()
         {
-
+            EventManager.Instance.CallEvent(EventType.OpenSetting);
         }
         private void CloseSetting()
         {
-
+            EventManager.Instance.CallEvent(EventType.CloseSetting);
         }
         private void EndGame()
         {
-
+            EventManager.Instance.CallEvent(EventType.EndGame);
         }
         private void RestartGame()
         {
-
+            EventManager.Instance.CallEvent(EventType.RestartGame);
         }
         private void ToLobby()
         {
@@ -171,7 +178,7 @@ namespace Ty.ProjectSubak.Game
         }
         private void ShutDown()
         {
-
+            
         }
         #endregion
 

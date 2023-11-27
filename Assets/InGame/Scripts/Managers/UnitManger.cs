@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Ty.ProjectSubak.Game
 {
-    public class UnitManger : MonoBehaviour, IObserver
+    public class UnitManger : ObserverBehaviour
     {
         #region StaticField
         private static UnitManger instance;
@@ -21,17 +21,42 @@ namespace Ty.ProjectSubak.Game
         #endregion
 
         #region SerializeField
+        [Header("Related Objects")]
         [SerializeField] private UnitSpawner unitSpawner;
         [SerializeField] private Ceiling ceiling;
+
+        [Header("Prefabs")]
+        [SerializeField] private List<GameObject> unitPrefabs;
         #endregion
         #region PrivateField
         private int unitCnt;
         #endregion
 
         #region PublicMethod
-        public void OnEvent(GameState newGameState)
+        public override void OnEvent(EventType eventType)
         {
-
+            switch (eventType)
+            {
+                case EventType.InitGame:
+                    break;
+                case EventType.StartGame:
+                    break;
+                case EventType.OpenSetting:
+                    break;
+                case EventType.CloseSetting:
+                    break;
+                case EventType.EndGame:
+                    break;
+                case EventType.RestartGame:
+                    break;
+                case EventType.ToLobby:
+                    break;
+                case EventType.ShutDown:
+                    break;
+                default:
+                    break;
+            }
+            return;
         }
         public void SpawnUnit(bool isHold, int unitLv, Vector2? pos = null)
         {
@@ -39,6 +64,12 @@ namespace Ty.ProjectSubak.Game
         }
         #endregion
 
+        #region PrivateMethod
+        private void Init()
+        {
+
+        }
+        #endregion
     }
 }
 
