@@ -41,7 +41,7 @@ namespace Ty.ProjectSubak.Game
         #region PublicMethod
         public void CallEvent(EventType eventType)
         {
-            //foreach (IObserver observer in obs) observer.OnEvent(eventType);
+            foreach (ObserverBehaviour observer in obs) observer.OnEvent(eventType);
         }
         #endregion
 
@@ -56,11 +56,6 @@ namespace Ty.ProjectSubak.Game
             {
                 Destroy(this.gameObject);
             }
-        }
-
-        private void Update()
-        {
-
         }
         #endregion
 

@@ -32,13 +32,17 @@ namespace Ty.ProjectSubak.Game
         }
         #endregion
         #region PrivateField
-        private GameState nowState = GameState.Idle;
-        private GameState nextState = GameState.Idle;
-        public GameState NextState
+        private GameState currentState = GameState.Idle;
+        private GameState _nextState = GameState.Idle;
+        public GameState nextState
         {
+            get
+            {
+                return _nextState;
+            }
             set
             {
-                nextState = value;
+                _nextState = value;
                 UpdateState();
             }
         }
@@ -46,98 +50,98 @@ namespace Ty.ProjectSubak.Game
         #region PublicMethods
         public void UpdateState()
         {
-            if (nowState == nextState) return;
+            if (currentState == nextState) return;
 
-            if (nowState == GameState.Idle)
+            if (currentState == GameState.Idle)
             {
                 switch (nextState)
                 {
                     case GameState.Init:
-                        nowState = nextState;
+                        currentState = nextState;
                         InitGame();
                         break;
                     default:
-                        nextState = nowState;
+                        nextState = currentState;
                         break;
                 }
             }
-            else if (nowState == GameState.Init)
+            else if (currentState == GameState.Init)
             {
                 switch (nextState)
                 {
                     case GameState.GamePlay:
-                        nowState = nextState;
+                        currentState = nextState;
                         StarGame();
                         break;
                     default:
-                        nextState = nowState;
+                        nextState = currentState;
                         break;
                 }
             }
-            else if (nowState == GameState.GamePlay)
+            else if (currentState == GameState.GamePlay)
             {
                 switch (nextState)
                 {
                     case GameState.Setting:
-                        nowState = nextState;
+                        currentState = nextState;
                         OpenSetting();
                         break;
                     case GameState.GameEnd:
-                        nowState = nextState;
+                        currentState = nextState;
                         EndGame();
                         break;
                     default:
-                        nextState = nowState;
+                        nextState = currentState;
                         break;
                 }
             }
-            else if (nowState == GameState.Setting)
+            else if (currentState == GameState.Setting)
             {
                 switch (nextState)
                 {
                     case GameState.GamePlay:
-                        nowState = nextState;
+                        currentState = nextState;
                         CloseSetting();
                         break;
                     case GameState.ToLobby:
-                        nowState = nextState;
+                        currentState = nextState;
                         ToLobby();
                         break;
                     case GameState.ShutDown:
-                        nowState = nextState;
+                        currentState = nextState;
                         ShutDown();
                         break;
                     default:
-                        nextState = nowState;
+                        nextState = currentState;
                         break;
                 }
             }
-            else if (nowState == GameState.GameEnd)
+            else if (currentState == GameState.GameEnd)
             {
                 switch (nextState)
                 {
                     case GameState.Idle:
-                        nowState = nextState;
+                        currentState = nextState;
                         RestartGame();
                         break;
                     case GameState.ToLobby:
-                        nowState = nextState;
+                        currentState = nextState;
                         ToLobby();
                         break;
                     case GameState.ShutDown:
-                        nowState = nextState;
+                        currentState = nextState;
                         ShutDown();
                         break;
                     default:
-                        nextState = nowState;
+                        nextState = currentState;
                         break;
                 }
             }
-            else if (nowState == GameState.ToLobby)
+            else if (currentState == GameState.ToLobby)
             {
                 
             }
-            else if (nowState == GameState.ShutDown)
+            else if (currentState == GameState.ShutDown)
             {
                 
             }
@@ -150,6 +154,7 @@ namespace Ty.ProjectSubak.Game
         #region PrivateMethods
         private void InitGame()
         {
+            Debug.Log("GameManager.Init() called");
             EventManager.Instance.CallEvent(EventType.InitGame);
         }
         private void StarGame()
@@ -188,7 +193,6 @@ namespace Ty.ProjectSubak.Game
             if (instance == null)
             {
                 instance = this;
-                NextState = GameState.Init;
             }
             else
             {
@@ -198,7 +202,7 @@ namespace Ty.ProjectSubak.Game
 
         private void Update()
         {
-
+            if(currentState == GameState.Idle) { nextState = GameState.Init; }
         }
         #endregion
 

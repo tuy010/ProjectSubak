@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -38,6 +39,7 @@ namespace Ty.ProjectSubak.Game
             switch (eventType)
             {
                 case EventType.InitGame:
+                    Init();
                     break;
                 case EventType.StartGame:
                     break;
@@ -58,16 +60,43 @@ namespace Ty.ProjectSubak.Game
             }
             return;
         }
-        public void SpawnUnit(bool isHold, int unitLv, Vector2? pos = null)
+        public Unit SpawnUnit(bool isHold, int unitLv, Vector3? pos = null)
         {
-
+            if(isHold)
+            {
+                Unit unit = Instantiate(unitPrefabs[unitLv], unitSpawner.UnitSpawnPoint.position, Quaternion.identity).GetComponent<Unit>();
+                unit.transform.SetParent(unitSpawner.UnitSpawnPoint);
+                unit.Init(isHold, unitCnt++);
+                return unit;
+            }
+            else
+            {
+                Unit unit = Instantiate(unitPrefabs[unitLv], pos.Value, Quaternion.identity).GetComponent<Unit>();
+                unit.Init(isHold, unitCnt++);
+                return null;
+            }
+            
         }
         #endregion
 
         #region PrivateMethod
         private void Init()
         {
+            unitSpawner.nextState = UnitSpawner.State.Init;
+        }
+        #endregion
 
+        #region Unity
+        private void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
         }
         #endregion
     }

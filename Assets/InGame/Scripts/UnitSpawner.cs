@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Ty.ProjectSubak.Game;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 using static Ty.ProjectSubak.Game.GameManager;
 
 public class UnitSpawner : MonoBehaviour
 {
     #region Enum
-    enum State
+    public enum State
     {
         Idle,
         Init,
@@ -16,65 +19,87 @@ public class UnitSpawner : MonoBehaviour
     #endregion
 
     #region SerializeField
-    [Header("Init Data")]
+    [Header("Position Data")]
     [SerializeField] private Transform initPos;
-    [Header("Spawn Point")]
     [SerializeField] private Transform unitSpawnPoint;
+    public Transform UnitSpawnPoint => unitSpawnPoint;
+    [SerializeField] private Transform boundaryL;
+    [SerializeField] private Transform boundaryR;
+    
+    [Header("Etc")]
+    [SerializeField] private float speed;
+    [SerializeField] private int minSpawnUnitLV = 0;
+    [SerializeField] private int maxSpawnUnitLV = 4;
+
     #endregion
     #region PrivateField
-    private bool isWorking;
+    private bool isWorking = true;
     private Unit unitHold;
-    private State nowState;
-    private State nextState;
+    private State currentState;
+    private State _nextState;
+    public State nextState
+    {
+        get { return _nextState; }
+        set { 
+            _nextState = value;
+            UpdateState();}
+    }
+    [SerializeField] private int nowUnitLV;
+    private int nextUnitLV;
+    private float moveDir;
     #endregion
 
     #region PublicMethod
-    public void UpdateState()
-    {
-        if (nowState == nextState) return;
 
-        if (nowState == State.Idle)
+    #endregion
+
+    #region PrivateMethod
+    private void UpdateState()
+    {
+        if (currentState == nextState) return;
+
+        if (currentState == State.Idle)
         {
             switch (nextState)
             {
                 case State.Init:
-                    nowState = nextState;
+                    currentState = nextState;
                     Init();
                     break;
                 default:
                     break;
             }
         }
-        else if (nowState == State.Init)
+        else if (currentState == State.Init)
         {
             switch (nextState)
             {
                 case State.Hold:
-                    nowState = nextState;
+                    currentState = nextState;
                     HoldUnit();
                     break;
                 default:
                     break;
             }
         }
-        else if (nowState == State.Hold)
+        else if (currentState == State.Hold)
         {
             switch (nextState)
             {
                 case State.Drop:
-                    nowState = nextState;
+                    currentState = nextState;
                     DropUnit();
                     break;
                 default:
                     break;
             }
         }
-        else if (nowState == State.Drop)
+        else if (currentState == State.Drop)
         {
             switch (nextState)
             {
                 case State.Hold:
-                    nowState = nextState;
+                    currentState = nextState;
                     HoldUnit();
                     break;
                 default:
@@ -83,25 +108,71 @@ public class UnitSpawner : MonoBehaviour
         }
         return;
     }
-
-    #endregion
-
-    #region PrivateMethod
-    public void Init()
+    private void Init()
     {
         if (unitHold != null) Destroy(unitHold.gameObject);
+        nextUnitLV = Random.Range(minSpawnUnitLV, maxSpawnUnitLV + 1);
         transform.position = initPos.position;
         isWorking = true;
         nextState = State.Hold;
     }
-    public void HoldUnit()
+    private void HoldUnit()
     {
-
+        unitHold = UnitManger.Instance.SpawnUnit(true, nextUnitLV);
+        nowUnitLV = nextUnitLV;
+        nextUnitLV = Random.Range(minSpawnUnitLV, maxSpawnUnitLV+1);
     }
-    public void DropUnit()
+    private void DropUnit()
     {
-        if (nowState != State.Drop || unitHold == null) return;
+        if (currentState != State.Drop || unitHold == null)
+        {
+            Debug.Log("DROP FALSE");
+            return;
+        }
+        unitHold.nextState = Unit.State.Drop;
         nextState = State.Hold;
+    }
+    #endregion
+
+    #region InputSysMethods
+    private void OnMove(InputValue value)
+    {       
+        if (!isWorking) return;
+        float input = value.Get<float>();
+        moveDir = input;        
+    }
+    private void OnDrop()
+    {
+        if (currentState == State.Hold)
+        {
+            nextState = State.Drop;
+        }
+    }
+    #endregion
+
+    #region Unity
+    private void Update()
+    {
+        if (isWorking)
+        {
+            switch(currentState)
+            {
+                case State.Idle:
+                    break;
+                case State.Init:
+                    break;
+                case State.Hold:
+                    if (moveDir == 0) break;
+                    float x = Mathf.Clamp(gameObject.transform.position.x + moveDir * speed * Time.deltaTime, boundaryL.position.x, boundaryR.position.x);
+                    gameObject.transform.position = new Vector3(x, gameObject.transform.position.y, gameObject.transform.position.z);
+                    break;
+                case State.Drop:                    
+                    break;
+                default: 
+                    break;
+            }
+            ;
+        }
     }
     #endregion
 }

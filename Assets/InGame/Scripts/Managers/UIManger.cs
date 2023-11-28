@@ -40,6 +40,7 @@ namespace Ty.ProjectSubak.Game
             switch (eventType)
             {
                 case EventType.InitGame:
+                    Init();
                     break;
                 case EventType.StartGame:
                     break;
@@ -58,6 +59,27 @@ namespace Ty.ProjectSubak.Game
                 default:
                     break;
             } return;
+        }
+        #endregion
+
+        #region PrivateMethod
+        private void Init()
+        {
+
+        }
+        #endregion
+
+        #region Unity
+        private void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
         }
         #endregion
     }
