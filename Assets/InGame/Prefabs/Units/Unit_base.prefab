@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 4181802413973380253}
   m_Layer: 0
   m_Name: Unit_base
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -306,6 +306,8 @@ MonoBehaviour:
   _level: 0
   rb: {fileID: 508971848988002578}
   cd: {fileID: 8713547732384207051}
+  currentState: 0
+  _nextState: 0
 --- !u!222 &4181802413973380253
 CanvasRenderer:
   m_ObjectHideFlags: 0

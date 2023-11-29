@@ -129,8 +129,7 @@ public class UnitSpawner : MonoBehaviour
             Debug.Log("DROP FALSE");
             return;
         }
-        unitHold.nextState = Unit.State.Drop;
-        nextState = State.Hold;
+        unitHold.NextState = Unit.State.Drop;
     }
     #endregion
 
@@ -162,11 +161,20 @@ public class UnitSpawner : MonoBehaviour
                 case State.Init:
                     break;
                 case State.Hold:
-                    if (moveDir == 0) break;
-                    float x = Mathf.Clamp(gameObject.transform.position.x + moveDir * speed * Time.deltaTime, boundaryL.position.x, boundaryR.position.x);
-                    gameObject.transform.position = new Vector3(x, gameObject.transform.position.y, gameObject.transform.position.z);
+                    if (moveDir != 0)
+                    {
+                        float x = Mathf.Clamp(gameObject.transform.position.x + moveDir * speed * Time.deltaTime, boundaryL.position.x, boundaryR.position.x);
+                        gameObject.transform.position = new Vector3(x, gameObject.transform.position.y, gameObject.transform.position.z);
+                    }                    
                     break;
-                case State.Drop:                    
+                case State.Drop:
+                    if (moveDir != 0)
+                    {
+                        float x = Mathf.Clamp(gameObject.transform.position.x + moveDir * speed * Time.deltaTime, boundaryL.position.x, boundaryR.position.x);
+                        gameObject.transform.position = new Vector3(x, gameObject.transform.position.y, gameObject.transform.position.z);
+                    }
+                    if (unitHold == null) nextState = State.Hold;
+                    else if(unitHold.CurrentState == Unit.State.Ground) nextState = State.Hold;
                     break;
                 default: 
                     break;

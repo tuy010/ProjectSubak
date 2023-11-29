@@ -60,7 +60,7 @@ namespace Ty.ProjectSubak.Game
             }
             return;
         }
-        public Unit SpawnUnit(bool isHold, int unitLv, Vector3? pos = null)
+        public Unit SpawnUnit(bool isHold, int unitLv, Vector3? pos = null, Vector2? vel = null)
         {
             if(isHold)
             {
@@ -73,6 +73,7 @@ namespace Ty.ProjectSubak.Game
             {
                 Unit unit = Instantiate(unitPrefabs[unitLv], pos.Value, Quaternion.identity).GetComponent<Unit>();
                 unit.Init(isHold, unitCnt++);
+                unit.GetComponent<Rigidbody2D>().velocity = vel.Value;
                 return null;
             }
             

@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: lv
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: -2316918651024614082, guid: 900faa00c94d53b48ae73253adb89598, type: 3}
+      propertyPath: _level
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2953961300072224726, guid: 900faa00c94d53b48ae73253adb89598, type: 3}
       propertyPath: m_RootOrder
       value: -1

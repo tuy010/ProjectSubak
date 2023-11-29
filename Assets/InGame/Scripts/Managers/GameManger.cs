@@ -154,7 +154,6 @@ namespace Ty.ProjectSubak.Game
         #region PrivateMethods
         private void InitGame()
         {
-            Debug.Log("GameManager.Init() called");
             EventManager.Instance.CallEvent(EventType.InitGame);
         }
         private void StarGame()

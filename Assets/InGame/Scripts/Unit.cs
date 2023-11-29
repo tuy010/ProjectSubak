@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Ty.ProjectSubak.Game;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -10,7 +11,8 @@ public class Unit : MonoBehaviour
         Idle,
         Hold,
         Drop,
-        Ground
+        Ground,
+        Merge
     }
     #endregion
 
@@ -21,11 +23,16 @@ public class Unit : MonoBehaviour
     [SerializeField] private Collider2D cd;
     #endregion
     #region PrivateField
-    private int _unitNum;
-    public int unitNum => _unitNum;
-    [SerializeField] private State currentState = State.Idle;
-    [SerializeField] private State _nextState = State.Idle;
-    public State nextState
+    [SerializeField] private int _unitNum;
+    public int UnitNum => _unitNum;
+    private State _currentState = State.Idle;
+    public State CurrentState
+    {
+        get { return _currentState; }
+        set { _currentState = value; }
+    }
+    private State _nextState = State.Idle;
+    public State NextState
     {
         get { return _nextState; }
         set{
@@ -41,11 +48,16 @@ public class Unit : MonoBehaviour
         _unitNum = unitNum;
         if(isHold)
         {
-            nextState = State.Hold;
+            NextState = State.Hold;
         }
         else
         {
-            nextState = State.Ground;
+            NextState = State.Ground;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            cd.isTrigger = false;
+            Vector3 tmp = transform.position;
+            transform.SetParent(null, true);
+            transform.position = tmp;
         }   
     }
     #endregion
@@ -53,46 +65,46 @@ public class Unit : MonoBehaviour
     #region PrivateMethod
     private void UpdateState()
     {
-        if (currentState == nextState) return;
+        if (CurrentState == NextState) return;
 
-        if (currentState == State.Idle)
+        if (CurrentState == State.Idle)
         {
-            switch (nextState)
+            switch (NextState)
             {               
                 case State.Hold:
-                    currentState = nextState;
+                    CurrentState = NextState;
                     break;
                 case State.Ground:
-                    currentState = nextState;
+                    CurrentState = NextState;
                     break;
                 default:
                     break;
             }
         }
-        else if (currentState == State.Hold)
+        else if (CurrentState == State.Hold)
         {
-            switch (nextState)
+            switch (NextState)
             {
                 case State.Drop:
-                    currentState = nextState;
+                    CurrentState = NextState;
                     Drop();
                     break;
                 default:
                     break;
             }
         }
-        else if (currentState == State.Drop)
+        else if (CurrentState == State.Drop)
         {
-            switch (nextState)
+            switch (NextState)
             {
                 case State.Ground:
-                    currentState = nextState;
+                    CurrentState = NextState;
                     break;
                 default:
                     break;
             }
         }
-        else if (currentState == State.Ground)
+        else if (CurrentState == State.Ground)
         {
 
         }
@@ -101,11 +113,76 @@ public class Unit : MonoBehaviour
         }
     private void Drop()
     {
+        float randX = Random.Range(-0.01f,0.01f);
         rb.bodyType = RigidbodyType2D.Dynamic;
         cd.isTrigger = false;
-        Vector3 tmp = transform.position;
+        Vector3 tmp = transform.position + new Vector3(randX, 0, 0);
         transform.SetParent(null, true);
         transform.position = tmp;
+    }
+    private void MergeUnit(Unit unit)
+    {
+        Vector2 thisV = transform.position;
+        Vector2 inputV = unit.gameObject.transform.position;
+        Vector2 outputV = new Vector2((thisV.x + inputV.x) / 2, (thisV.y + inputV.y) / 2);
+
+        Vector2 thisVel = rb.velocity;
+        Vector2 inputVel = unit.GetComponent<Rigidbody2D>().velocity;
+        Vector2 outputVel = (thisVel + inputVel) / 2;
+
+        /*
+        float thisVelX = rb.velocity.x;
+        float inputVelX = unit.GetComponent<Rigidbody2D>().velocity.x;
+        Vector2 outputVel = new Vector2((thisVelX + inputVelX) / 2, 0);
+        */
+
+        UnitManger.Instance.SpawnUnit(false, this.Level+1, outputV, outputVel);
+        Destroy(unit.gameObject);
+        Destroy(gameObject);
+    }
+    #endregion
+
+    #region Unity
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (CurrentState == State.Drop)
+        {
+            if(col.gameObject.tag == "Unit")
+            {
+                NextState = State.Ground;
+                Unit tmp = col.gameObject.GetComponent<Unit>();
+                if (tmp.Level == this.Level)
+                {
+                    if(tmp.UnitNum < this.UnitNum)
+                    {
+                        this.CurrentState = State.Merge;
+                        tmp.CurrentState = State.Merge;
+                        MergeUnit(tmp);
+                    }
+                }
+                else NextState = State.Ground;
+            }
+            else if(col.gameObject.tag == "Ground")
+            {
+                NextState = State.Ground;
+            }
+        }
+        if (CurrentState == State.Ground)
+        {
+            if (col.gameObject.tag == "Unit")
+            {
+                Unit tmp = col.gameObject.GetComponent<Unit>();
+                if (tmp.Level == this.Level && tmp.CurrentState != State.Merge)
+                {
+                    if (tmp.UnitNum < this.UnitNum)
+                    {
+                        this.CurrentState = State.Merge;
+                        tmp.CurrentState = State.Merge;
+                        MergeUnit(tmp);
+                    }
+                }
+            }
+        }
     }
     #endregion
 }
