@@ -44,10 +44,13 @@ namespace Ty.ProjectSubak.Game
                 case EventType.StartGame:
                     break;
                 case EventType.OpenSetting:
+                    unitSpawner.IsWorking = false;
                     break;
                 case EventType.CloseSetting:
+                    unitSpawner.IsWorking = true;
                     break;
                 case EventType.EndGame:
+                    unitSpawner.IsWorking = false;
                     break;
                 case EventType.RestartGame:
                     break;
@@ -74,6 +77,7 @@ namespace Ty.ProjectSubak.Game
                 Unit unit = Instantiate(unitPrefabs[unitLv], pos.Value, Quaternion.identity).GetComponent<Unit>();
                 unit.Init(isHold, unitCnt++);
                 unit.GetComponent<Rigidbody2D>().velocity = vel.Value;
+                GameManager.Instance.Score += unitLv+1;
                 return null;
             }
             

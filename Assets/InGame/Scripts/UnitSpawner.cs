@@ -22,7 +22,6 @@ public class UnitSpawner : MonoBehaviour
     [Header("Position Data")]
     [SerializeField] private Transform initPos;
     [SerializeField] private Transform unitSpawnPoint;
-    public Transform UnitSpawnPoint => unitSpawnPoint;
     [SerializeField] private Transform boundaryL;
     [SerializeField] private Transform boundaryR;
     
@@ -30,12 +29,12 @@ public class UnitSpawner : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private int minSpawnUnitLV = 0;
     [SerializeField] private int maxSpawnUnitLV = 4;
-
     #endregion
+
     #region PrivateField
-    private bool isWorking = true;
+    [SerializeField] private bool isWorking;
     private Unit unitHold;
-    private State currentState;
+    [SerializeField] private State currentState;
     private State _nextState;
     public State nextState
     {
@@ -44,13 +43,19 @@ public class UnitSpawner : MonoBehaviour
             _nextState = value;
             UpdateState();}
     }
-    [SerializeField] private int nowUnitLV;
+    private int nowUnitLV;
     private int nextUnitLV;
     private float moveDir;
     #endregion
 
-    #region PublicMethod
-
+    #region Get/Set
+    public Transform UnitSpawnPoint => unitSpawnPoint;
+    public int NextUnitLV => nextUnitLV;
+    public bool IsWorking
+    {
+        get { return isWorking; }
+        set { isWorking = value; }
+    }
     #endregion
 
     #region PrivateMethod
@@ -142,6 +147,7 @@ public class UnitSpawner : MonoBehaviour
     }
     private void OnDrop()
     {
+        if (!isWorking) return;
         if (currentState == State.Hold)
         {
             nextState = State.Drop;
@@ -159,6 +165,7 @@ public class UnitSpawner : MonoBehaviour
                 case State.Idle:
                     break;
                 case State.Init:
+                    Init();
                     break;
                 case State.Hold:
                     if (moveDir != 0)

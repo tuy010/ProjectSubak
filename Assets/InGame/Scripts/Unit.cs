@@ -18,7 +18,6 @@ public class Unit : MonoBehaviour
 
     #region SerializeField
     [SerializeField] private int _level;
-    public int Level => _level;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D cd;
     #endregion
@@ -26,16 +25,21 @@ public class Unit : MonoBehaviour
     [SerializeField] private int _unitNum;
     public int UnitNum => _unitNum;
     private State _currentState = State.Idle;
+    private State _nextState = State.Idle;
+    #endregion
+
+    #region Get/Set
+    public int Level => _level;
     public State CurrentState
     {
         get { return _currentState; }
         set { _currentState = value; }
     }
-    private State _nextState = State.Idle;
     public State NextState
     {
         get { return _nextState; }
-        set{
+        set
+        {
             _nextState = value;
             UpdateState();
         }
@@ -135,8 +139,9 @@ public class Unit : MonoBehaviour
         float inputVelX = unit.GetComponent<Rigidbody2D>().velocity.x;
         Vector2 outputVel = new Vector2((thisVelX + inputVelX) / 2, 0);
         */
-
-        UnitManger.Instance.SpawnUnit(false, this.Level+1, outputV, outputVel);
+        if (this.Level != 10) UnitManger.Instance.SpawnUnit(false, this.Level + 1, outputV, outputVel);
+        else GameManager.Instance.Score += 11;
+        
         Destroy(unit.gameObject);
         Destroy(gameObject);
     }
@@ -181,6 +186,27 @@ public class Unit : MonoBehaviour
                         MergeUnit(tmp);
                     }
                 }
+            }
+        }
+    }
+    private void OnCollisionStay2D(Collision2D col)
+    {
+        if(CurrentState == State.Drop && NextState == CurrentState)
+        {
+            if (col.gameObject.tag == "Unit")
+            {
+                NextState = State.Ground;
+                Unit tmp = col.gameObject.GetComponent<Unit>();
+                if (tmp.Level == this.Level)
+                {
+                    if (tmp.UnitNum < this.UnitNum)
+                    {
+                        this.CurrentState = State.Merge;
+                        tmp.CurrentState = State.Merge;
+                        MergeUnit(tmp);
+                    }
+                }
+                else NextState = State.Ground;
             }
         }
     }

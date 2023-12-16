@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace Ty.ProjectSubak.Game
 {
@@ -31,9 +35,14 @@ namespace Ty.ProjectSubak.Game
             }
         }
         #endregion
+
         #region PrivateField
-        private GameState currentState = GameState.Idle;
+        [SerializeField] private GameState currentState = GameState.Idle;
         private GameState _nextState = GameState.Idle;
+        private int score;
+        #endregion
+
+        #region Get/Set
         public GameState nextState
         {
             get
@@ -46,7 +55,19 @@ namespace Ty.ProjectSubak.Game
                 UpdateState();
             }
         }
+        public int Score
+        {
+            get
+            {
+                return score;
+            }
+            set
+            {
+                score = value;
+            }
+        }
         #endregion
+
         #region PublicMethods
         public void UpdateState()
         {
@@ -99,6 +120,10 @@ namespace Ty.ProjectSubak.Game
             {
                 switch (nextState)
                 {
+                    case GameState.Idle:
+                        currentState = nextState;
+                        RestartGame();
+                        break;
                     case GameState.GamePlay:
                         currentState = nextState;
                         CloseSetting();
@@ -149,12 +174,31 @@ namespace Ty.ProjectSubak.Game
 
             return;
         }
+
+        public void OnRestart()
+        {
+            if(currentState == GameState.Setting || currentState == GameState.GameEnd)
+            {
+                nextState = GameState.Idle;
+            }
+
+        }
+        public void OnToLobby()
+        {
+            if (currentState == GameState.Setting) nextState = GameState.ToLobby;
+        }
+        public void OnEnd()
+        {
+            nextState = GameState.GameEnd;
+        }
         #endregion
 
         #region PrivateMethods
         private void InitGame()
         {
+            Score = 0;
             EventManager.Instance.CallEvent(EventType.InitGame);
+            nextState = GameState.GamePlay;
         }
         private void StarGame()
         {
@@ -163,18 +207,23 @@ namespace Ty.ProjectSubak.Game
         private void OpenSetting()
         {
             EventManager.Instance.CallEvent(EventType.OpenSetting);
+            Time.timeScale = 0;
         }
         private void CloseSetting()
         {
             EventManager.Instance.CallEvent(EventType.CloseSetting);
+            Time.timeScale = 1;
         }
         private void EndGame()
         {
+            Time.timeScale = 0;
             EventManager.Instance.CallEvent(EventType.EndGame);
         }
         private void RestartGame()
         {
+            Time.timeScale = 1;
             EventManager.Instance.CallEvent(EventType.RestartGame);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         private void ToLobby()
         {
@@ -183,6 +232,14 @@ namespace Ty.ProjectSubak.Game
         private void ShutDown()
         {
             
+        }
+        #endregion
+
+        #region InputSysMethods
+        private void OnBackKey()
+        {
+            if(currentState == GameState.GamePlay) nextState = GameState.Setting;
+            else if(currentState == GameState.Setting) nextState = GameState.GamePlay;
         }
         #endregion
 
@@ -198,7 +255,6 @@ namespace Ty.ProjectSubak.Game
                 Destroy(this.gameObject);
             }
         }
-
         private void Update()
         {
             if(currentState == GameState.Idle) { nextState = GameState.Init; }

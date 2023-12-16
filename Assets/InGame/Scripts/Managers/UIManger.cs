@@ -45,10 +45,13 @@ namespace Ty.ProjectSubak.Game
                 case EventType.StartGame:
                     break;
                 case EventType.OpenSetting:
+                    OpenSetting();
                     break;
                 case EventType.CloseSetting:
+                    CloseSetting();
                     break;
                 case EventType.EndGame:
+                    OpenGameOverUI();
                     break;
                 case EventType.RestartGame:
                     break;
@@ -65,7 +68,29 @@ namespace Ty.ProjectSubak.Game
         #region PrivateMethod
         private void Init()
         {
+            uIPrefabs.settingUI.SetActive(false);
+            uIPrefabs.gameoverUI.SetActive(false);
+        }
+        private void OpenSetting()
+        {
+            uIPrefabs.settingUI.SetActive(true);
+        }
+        private void CloseSetting()
+        {
+            uIPrefabs.settingUI.SetActive(false);
+        }
+        private void OpenGameOverUI()
+        {
+            StartCoroutine(ShowGameOverUI());
+        }
+        #endregion
 
+        #region Coroutine
+        IEnumerator ShowGameOverUI()
+        {
+            yield return new WaitForSecondsRealtime(1.5f);
+            uIPrefabs.gameoverUI.SetActive(true);
+            yield break;
         }
         #endregion
 

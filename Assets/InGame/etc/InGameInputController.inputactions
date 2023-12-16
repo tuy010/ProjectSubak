@@ -70,6 +70,54 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Sys",
+            "id": "deb9cfe3-ef52-478d-8eef-45dbfda81937",
+            "actions": [
+                {
+                    "name": "BackKey",
+                    "type": "Button",
+                    "id": "b1ae79bb-7bc1-4735-befe-c9fecc7ea454",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ReStart",
+                    "type": "Button",
+                    "id": "fbd91588-b3a1-4943-9ea6-36b180d9248f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "06d687be-e7df-4bce-94d6-f87f9557da6e",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BackKey",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d0f71317-1781-4f3d-a929-26aadac02ba3",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReStart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
