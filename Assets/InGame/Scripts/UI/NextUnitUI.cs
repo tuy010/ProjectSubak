@@ -2,30 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NextUnitUI : MonoBehaviour
+namespace Ty.ProjectSubak.Game
 {
-    #region SerializeField
-    [SerializeField] List<GameObject> units;
-    [SerializeField] UnitSpawner unitSpawner;
-    #endregion
-
-    #region PrivateField
-    [SerializeField] private int unitLV;
-    #endregion
-    void Start()
+    public class NextUnitUI : MonoBehaviour
     {
-        foreach (var unit in units) unit.SetActive(false);
-        unitLV = -1;
-    }
+        #region SerializeField
+        [SerializeField] List<GameObject> units;
+        [SerializeField] UnitSpawner unitSpawner;
+        #endregion
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(unitLV != unitSpawner.NextUnitLV)
+        #region PrivateField
+        [SerializeField] private int unitLV;
+        #endregion
+        void Start()
         {
-            if(unitLV != -1) units[unitLV].SetActive(false);
-            unitLV = unitSpawner.NextUnitLV;
-            units[unitLV].SetActive(true);
+            foreach (var unit in units) unit.SetActive(false);
+            unitLV = -1;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (unitLV != unitSpawner.NextUnitLV)
+            {
+                if (unitLV != -1) units[unitLV].SetActive(false);
+                unitLV = unitSpawner.NextUnitLV;
+                units[unitLV].SetActive(true);
+            }
         }
     }
 }
+    

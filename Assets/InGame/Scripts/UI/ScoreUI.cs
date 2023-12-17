@@ -4,24 +4,31 @@ using TMPro;
 using Ty.ProjectSubak.Game;
 using UnityEngine;
 
-public class Score : MonoBehaviour
+namespace Ty.ProjectSubak.Game
 {
-    private int score;
-
-    [SerializeField] TextMeshProUGUI textUI;
-
-    private void Awake()
+    public class Score : MonoBehaviour
     {
-        score = -1;
-    }
+        private int score;
 
-    void Update()
-    {
-        int tmp = GameManager.Instance.Score;
-        if (score != tmp)
+        [SerializeField] private TextMeshProUGUI scoreText;
+        [SerializeField] private TextMeshProUGUI highScoreText;
+
+        private void Awake()
         {
-            score = tmp;
-            textUI.text = ("Score: " + tmp);
+            score = -1;
+            if (PlayerPrefs.HasKey("HighScore")) highScoreText.text = ("High Score: " + PlayerPrefs.GetInt("HighScore"));
+            else highScoreText.text = ("High Score: 0");
+        }
+
+        void Update()
+        {
+            int tmp = GameManager.Instance.Score;
+            if (score != tmp)
+            {
+                score = tmp;
+                scoreText.text = ("Score: " + tmp);
+            }
         }
     }
 }
+

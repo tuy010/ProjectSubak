@@ -26,6 +26,14 @@ namespace Ty.ProjectSubak.Game
         [SerializeField] private UnitSpawner unitSpawner;
         [SerializeField] private Ceiling ceiling;
 
+
+        [Header("Effect")]
+        [SerializeField] private ParticleSystem mergeEffect;
+
+        [Header("Audio")]
+        [SerializeField] private AudioClip dropClip;
+        [SerializeField] private AudioClip mergeSound;
+
         [Header("Prefabs")]
         [SerializeField] private List<GameObject> unitPrefabs;
         #endregion
@@ -74,10 +82,17 @@ namespace Ty.ProjectSubak.Game
             }
             else
             {
-                Unit unit = Instantiate(unitPrefabs[unitLv], pos.Value, Quaternion.identity).GetComponent<Unit>();
-                unit.Init(isHold, unitCnt++);
-                unit.GetComponent<Rigidbody2D>().velocity = vel.Value;
-                GameManager.Instance.Score += unitLv+1;
+                ParticleSystem particle = Instantiate(mergeEffect, pos.Value, Quaternion.identity);
+                if (unitLv < 11)
+                {
+                    Unit unit = Instantiate(unitPrefabs[unitLv], pos.Value, Quaternion.identity).GetComponent<Unit>();
+                    unit.Init(isHold, unitCnt++);
+                    unit.GetComponent<Rigidbody2D>().velocity = vel.Value;
+                }
+                GameManager.Instance.Score += unitLv + 1;
+
+                EffectAudioSource.Instance.AudioSource.clip = mergeSound;
+                EffectAudioSource.Instance.AudioSource.Play();
                 return null;
             }
             
@@ -88,6 +103,7 @@ namespace Ty.ProjectSubak.Game
         private void Init()
         {
             unitSpawner.nextState = UnitSpawner.State.Init;
+            unitSpawner.dropClip = dropClip;
         }
         #endregion
 

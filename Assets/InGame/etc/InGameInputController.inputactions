@@ -73,21 +73,12 @@
         },
         {
             "name": "Sys",
-            "id": "deb9cfe3-ef52-478d-8eef-45dbfda81937",
+            "id": "506481de-8091-4200-a70b-373a22fef43d",
             "actions": [
                 {
                     "name": "BackKey",
                     "type": "Button",
-                    "id": "b1ae79bb-7bc1-4735-befe-c9fecc7ea454",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ReStart",
-                    "type": "Button",
-                    "id": "fbd91588-b3a1-4943-9ea6-36b180d9248f",
+                    "id": "b04d10c8-e01a-4772-9cab-2240f05bee4d",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -97,23 +88,12 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "06d687be-e7df-4bce-94d6-f87f9557da6e",
+                    "id": "9eb97e07-5a8e-4c0b-92df-0d1c19ecd380",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "BackKey",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d0f71317-1781-4f3d-a929-26aadac02ba3",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ReStart",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

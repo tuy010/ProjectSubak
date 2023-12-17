@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 4975983304294005320}
   - component: {fileID: 2270232311297964818}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 7678431258266345680}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -4.49, z: 0}
-  m_LocalScale: {x: 0.15, y: 8.01, z: 1}
+  m_LocalScale: {x: 0.1, y: 8.01, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8017699090860179616}
@@ -202,7 +202,7 @@ Transform:
   - {fileID: 4975983304294005320}
   - {fileID: 6139204158085881266}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6341568768578440714
 SpriteRenderer:
@@ -275,7 +275,8 @@ MonoBehaviour:
   speed: 2
   minSpawnUnitLV: 0
   maxSpawnUnitLV: 4
-  nowUnitLV: 0
+  isWorking: 0
+  currentState: 0
 --- !u!114 &5996281848283493394
 MonoBehaviour:
   m_ObjectHideFlags: 0

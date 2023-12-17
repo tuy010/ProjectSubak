@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -36,10 +37,16 @@ namespace Ty.ProjectSubak.Game
         }
         #endregion
 
+        #region SerializeField
+        [Header("Sound")]
+        [SerializeField] private AudioClip buttonClip;
+        #endregion
+
         #region PrivateField
         [SerializeField] private GameState currentState = GameState.Idle;
         private GameState _nextState = GameState.Idle;
         private int score;
+        private int highScore;
         #endregion
 
         #region Get/Set
@@ -177,7 +184,9 @@ namespace Ty.ProjectSubak.Game
 
         public void OnRestart()
         {
-            if(currentState == GameState.Setting || currentState == GameState.GameEnd)
+            EffectAudioSource.Instance.AudioSource.clip = buttonClip;
+            EffectAudioSource.Instance.AudioSource.Play();
+            if (currentState == GameState.Setting || currentState == GameState.GameEnd)
             {
                 nextState = GameState.Idle;
             }
@@ -185,17 +194,26 @@ namespace Ty.ProjectSubak.Game
         }
         public void OnToLobby()
         {
+            EffectAudioSource.Instance.AudioSource.clip = buttonClip;
+            EffectAudioSource.Instance.AudioSource.Play();
             if (currentState == GameState.Setting) nextState = GameState.ToLobby;
         }
         public void OnEnd()
         {
             nextState = GameState.GameEnd;
         }
+        public void OnShutDown()
+        {
+            EffectAudioSource.Instance.AudioSource.clip = buttonClip;
+            EffectAudioSource.Instance.AudioSource.Play();
+            if (currentState == GameState.ToLobby || currentState == GameState.Setting) nextState = GameState.ShutDown;
+        }
         #endregion
 
         #region PrivateMethods
         private void InitGame()
         {
+            Application.targetFrameRate = 60;
             Score = 0;
             EventManager.Instance.CallEvent(EventType.InitGame);
             nextState = GameState.GamePlay;
@@ -218,27 +236,38 @@ namespace Ty.ProjectSubak.Game
         {
             Time.timeScale = 0;
             EventManager.Instance.CallEvent(EventType.EndGame);
+            if (! PlayerPrefs.HasKey("HighScore")) PlayerPrefs.SetInt("HighScore", 0);
+            if (PlayerPrefs.GetInt("HighScore") < score) PlayerPrefs.SetInt("HighScore", score);
         }
         private void RestartGame()
         {
+            EffectAudioSource.Instance.AudioSource.clip = buttonClip;
             Time.timeScale = 1;
             EventManager.Instance.CallEvent(EventType.RestartGame);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);   
         }
         private void ToLobby()
         {
-
+            Destroy(BGMAudioSource.Instance.gameObject);
+            Destroy(EffectAudioSource.Instance.gameObject);
         }
         private void ShutDown()
         {
-            
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit(); // 어플리케이션 종료
+        #endif
         }
         #endregion
 
         #region InputSysMethods
-        private void OnBackKey()
+        public void OnBackKey()
         {
-            if(currentState == GameState.GamePlay) nextState = GameState.Setting;
+            Debug.Log("!");
+            EffectAudioSource.Instance.AudioSource.clip = buttonClip;
+            EffectAudioSource.Instance.AudioSource.Play();
+            if (currentState == GameState.GamePlay) nextState = GameState.Setting;
             else if(currentState == GameState.Setting) nextState = GameState.GamePlay;
         }
         #endregion

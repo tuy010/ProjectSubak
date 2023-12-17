@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Unit
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -48,4 +49,7 @@ TagManager:
     locked: 0
   - name: Unit
     uniqueID: 2638034063
+    locked: 0
+  - name: Particle
+    uniqueID: 3998059489
     locked: 0
