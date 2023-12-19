@@ -196,7 +196,7 @@ namespace Ty.ProjectSubak.Game
         {
             EffectAudioSource.Instance.AudioSource.clip = buttonClip;
             EffectAudioSource.Instance.AudioSource.Play();
-            if (currentState == GameState.Setting) nextState = GameState.ToLobby;
+            if (currentState == GameState.Setting || currentState == GameState.GameEnd) nextState = GameState.ToLobby;
         }
         public void OnEnd()
         {
